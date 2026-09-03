@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"errors"	
+	"errors"
 	"net/http"
 	"testing"
 
@@ -10,28 +10,28 @@ import (
 
 func TestGetAPIKey(t *testing.T) {
 	tests := map[string]struct {
-		input http.Header
-		want string
+		input         http.Header
+		want          string
 		expectedError error
 	}{
 		"empty Auth header": {
-			input: http.Header{"Authorization": []string{""}},
-			want: "",
+			input:         http.Header{"Authorization": []string{""}},
+			want:          "",
 			expectedError: ErrNoAuthHeaderIncluded,
 		},
 		"short auth header": {
-			input: http.Header{"Authorization": []string{"ApiKey"}},
-			want: "",
+			input:         http.Header{"Authorization": []string{"ApiKey"}},
+			want:          "",
 			expectedError: ErrMalformedAuthHeader,
 		},
 		"Auth without 'ApiKey'": {
-			input: http.Header{"Authorization": []string{"NotApiKey 12345"}},
-			want: "",
+			input:         http.Header{"Authorization": []string{"NotApiKey 12345"}},
+			want:          "",
 			expectedError: ErrMalformedAuthHeader,
 		},
 		"Simple Correct": {
-			input: http.Header{"Authorization": []string{"ApiKey 12345"}},
-			want: "12345",
+			input:         http.Header{"Authorization": []string{"ApiKey 12345"}},
+			want:          "12345",
 			expectedError: nil,
 		},
 	}
@@ -40,11 +40,11 @@ func TestGetAPIKey(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			got, actualerr := GetAPIKey(tc.input)
 			if !errors.Is(actualerr, tc.expectedError) {
-				t.Fatalf("expected error: %v, got error: %v", tc.expectedError, actualerr)	
+				t.Fatalf("expected error: %v, got error: %v", tc.expectedError, actualerr)
 			}
 			diff := cmp.Diff(got, tc.want)
 			if diff != "" {
-				t.Fatalf(diff)
+				t.Fatal(diff)
 			}
 		})
 	}
